@@ -5,6 +5,7 @@ from prettytable import PrettyTable
 
 
 def get_ip(name):
+    """Функция получения ip-адреса, с помощью утилиты tracert"""
     result = os.popen(f"tracert {name}").read()
     list_ip = list()
     for i in result.split('\n'):
@@ -14,6 +15,9 @@ def get_ip(name):
 
 
 def get_ip_information(ip):
+    """Функция получения информации об ip-адресах
+    Проверка на серые адреса: если адрес серый, то в таблице записывается '-'
+    """
     if ip.startswith('192.168.') or ip.startswith('10.') or (ip.startswith('172.') and 15 < int(ip.split('.')[1]) < 32):
         return ip, '-', '-', '-'
     try:
@@ -24,6 +28,7 @@ def get_ip_information(ip):
 
 
 def make_table(ips):
+    """Создание таблице с данными об ip-адресах"""
     table = PrettyTable(["№", "IP", "AS Name", "Country", "Provider"])
     for i, ip in enumerate(ips):
         info = get_ip_information(ip)
@@ -32,6 +37,7 @@ def make_table(ips):
 
 
 def main():
+    """Запуск программы в терминале: .\main.py ip-адрес или доменное имя """
     if len(sys.argv) == 2:
         ip = get_ip(sys.argv[1])
         print(make_table(ip))
